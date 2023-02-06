@@ -1,6 +1,9 @@
 import { Typography, Box, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Button } from "@mui/material"
 import { makeStyles } from 'tss-react/mui';
 import { orange } from "@mui/material/colors"
+import { useParams, useHistory } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 const useStyles = makeStyles()((theme) => {
   return {
     stuListColor: {
@@ -9,12 +12,30 @@ const useStyles = makeStyles()((theme) => {
       fontSize: 16,
       fontWeight: 'bold',
     },
-    
+
   };
 });
 
 const View = () => {
   const { classes } = useStyles();
+  const { id } = useParams();
+  const [student, setStudent] = useState([]);
+  const history = useHistory();
+  useEffect(() => {
+    async function getStudent() {
+      try {
+        const student = await axios.get(`http://localhost:3333/students/${id}`)
+        // console.log(student.data);
+        setStudent(student.data);
+      } catch (error) {
+        console.log("Something is Wrong");
+      }
+    }
+    getStudent();
+  }, [id])
+  function handleClick() {
+    history.push("/")
+  }
   return (
     <>
       <Box textAlign='center' p={2} className={classes.stuListColor}>
@@ -24,22 +45,22 @@ const View = () => {
         <Table>
           <TableHead>
             <TableRow style={{ backgroundColor: '#616161' }}>
-              <TableCell align="center" style={{fontSize: 16,fontWeight: 'bold',color: 'white'}} >
+              <TableCell align="center" style={{ fontSize: 16, fontWeight: 'bold', color: 'white' }} >
                 ID
               </TableCell>
-              <TableCell align="center" style={{fontSize: 16,fontWeight: 'bold',color: 'white'}} >
+              <TableCell align="center" style={{ fontSize: 16, fontWeight: 'bold', color: 'white' }} >
                 Name
               </TableCell>
-              <TableCell align="center" style={{fontSize: 16,fontWeight: 'bold',color: 'white'}} >
+              <TableCell align="center" style={{ fontSize: 16, fontWeight: 'bold', color: 'white' }} >
                 Email
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell align="center">1</TableCell>
-              <TableCell align="center">Sonam</TableCell>
-              <TableCell align="center">Sonam@gmail.com</TableCell>
+              <TableCell align="center">{student.id}</TableCell>
+              <TableCell align="center">{student.stuname}</TableCell>
+              <TableCell align="center">{student.email}</TableCell>
             </TableRow>
           </TableBody>
 
@@ -47,7 +68,7 @@ const View = () => {
         </Table>
       </TableContainer>
       <Box m={3} textAlign="center">
-        <Button variant="contained" color="primary">Back to Home</Button>
+        <Button variant="contained" color="primary" onClick={handleClick}>Back to Home</Button>
       </Box>
     </>
   )

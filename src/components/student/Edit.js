@@ -2,6 +2,9 @@
 import { Typography, Box, Grid, TextField, Button } from "@mui/material"
 import { makeStyles } from 'tss-react/mui';
 import { deepPurple, green } from "@mui/material/colors"
+import { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import axios from "axios";
 const useStyles = makeStyles()((theme) => {
   return {
     headingColor: {
@@ -17,6 +20,45 @@ const useStyles = makeStyles()((theme) => {
 });
 const Edit = () => {
   const { classes } = useStyles();
+  const { id } = useParams();
+  const history = useHistory();
+  const [student, setStudent] = useState({
+    stuname: "",
+    email: ""
+  });
+  useEffect(() => {
+    async function getStudent() {
+      try {
+        const student = await axios.get(`http://localhost:3333/students/${id}`)
+        // console.log(student.data);
+        setStudent(student.data);
+      } catch (error) {
+        console.log("Something is Wrong");
+      }
+    }
+    getStudent();
+  }, [id]);
+
+  function onTextFieldChange(e) {
+    setStudent({
+      ...student,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  async function onFormSubmit(e) {
+    e.preventDefault()
+    try {
+      await axios.put(`http://localhost:3333/students/${id}`, student)
+      history.push("/")
+    } catch (error) {
+      console.log("Something is Wrong");
+    }
+  }
+  function handleClick() {
+    history.push("/")
+  }
+
   return (
     <>
       <Box textAlign="center" p={2} className={classes.headingColor} mb={2}>
@@ -30,21 +72,21 @@ const Edit = () => {
           <form>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField autoComplete="id" name="id" variant="outlined" required fullWidth id="id" label="ID" autoFocus value='1' disabled />
+                <TextField autoComplete="id" name="id" variant="outlined" required fullWidth id="id" label="ID" autoFocus value={id} disabled />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField autoComplete="stuname" name="stuname" variant="outlined" required fullWidth id="stuname" label="Name" value='sonam' />
+                <TextField autoComplete="stuname" name="stuname" variant="outlined" required fullWidth id="stuname" label="Name" value={student.stuname} onChange={e => onTextFieldChange(e)}/>
               </Grid>
               <Grid item xs={12}>
-                <TextField autoComplete="email" name="email" variant="outlined" required fullWidth id="email" label="Email Address" value='sonam@gmail.com' />
+                <TextField autoComplete="email" name="email" variant="outlined" required fullWidth id="email" label="Email Address" value={student.email} onChange={e => onTextFieldChange(e)}/>
               </Grid>
             </Grid>
             <Box m={3}>
-              <Button type="button" variant="contained" color="primary" fullWidth > Update </Button>
+              <Button type="button" variant="contained" color="primary" fullWidth onClick={e => onFormSubmit(e)} > Update </Button>
             </Box>
           </form>
           <Box m={3} textAlign="center">
-            <Button variant="contained" color="primary">Back to Home</Button>
+            <Button variant="contained" color="primary" onClick={handleClick} >Back to Home</Button>
           </Box>
         </Grid>
       </Grid >

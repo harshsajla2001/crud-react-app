@@ -1,19 +1,19 @@
 {
-    "students": [
-        {
-            "id": 1,
-            "stuname": "sonam",
-            "email": "sonam@gmail.com"
-        },
-        {
-            "id": 2,
-            "stuname": "rahul",
-            "email": "rahul@gmail.com"
-        },
-        {
-            "id": 3,
-            "stuname": "sumit",
-            "email": "sumit@gmail.com"
-        }
-    ]
+  "students": [
+    {
+      "id": 3,
+      "stuname": "sumit",
+      "email": "sumit@gmail.com"
+    },
+    {
+      "stuname": "jay",
+      "email": "jay@gmail.com",
+      "id": 8
+    },
+    {
+      "stuname": "vikas kumar",
+      "email": "vikalkumar@gmail.com",
+      "id": 9
+    }
+  ]
 }
